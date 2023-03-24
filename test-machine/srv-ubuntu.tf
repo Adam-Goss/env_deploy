@@ -1,10 +1,14 @@
-resource "proxmox_vm_qemu" "srv-ubuntu" {
+resource "proxmox_vm_qemu" "cloudinit-test" {
+
     name = "srv-ubuntu"
     desc = "Ubuntu Server"
-    vmid = "8001"
+
     target_node = "pve"
 
-    #agent = 1
+
+    vmid = "8001"
+
+    agent = 1
 
     clone = "ubuntu-server-22.04"
     cores = 2
@@ -20,7 +24,7 @@ resource "proxmox_vm_qemu" "srv-ubuntu" {
     disk {
         storage = "disk_images"
         type = "virtio"
-        size = "20G"
+        size = 32
     }
 
     os_type = "cloud-init"
