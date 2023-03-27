@@ -1,20 +1,27 @@
-resource "proxmox_vm_qemu" "cloudinit-test" {
+resource "proxmox_vm_qemu" "srv-ubuntu" {
 
+    target_node = "pve"
+    vmid = "8001"
     name = "srv-ubuntu"
     desc = "Ubuntu Server"
 
-    target_node = "pve"
 
 
-    vmid = "8001"
 
-    agent = 1
+    #onboot = true
 
-    clone = "ubuntu-server-22.04"
+    full_clone = true
+
+    #agent = 1
+
+    clone = "ubuntu-2204-template"
     cores = 2
     sockets = 1
     cpu = "host"
-    memory = 2048
+
+    memory = 2048 
+
+    scsihw = "virtio-scsi-pci"
 
     network  {
         bridge = "vmbr0"
@@ -23,14 +30,26 @@ resource "proxmox_vm_qemu" "cloudinit-test" {
 
     disk {
         storage = "disk_images"
-        type = "virtio"
-        size = 32
+        discard = "on"
+        iothread = 0
+        size = "32G"
+        slot = 0
+        ssd = 0
+        type = "scsi"
     }
 
+    # VM Cloud-Init Settings
     os_type = "cloud-init"
-    ipconfig0 = "ip=192.168.1.200,gw=192.168.1.1"
-    nameserver = "8.8.8.8"
-    ciuser = "test"
-    cipassword = "test"
+
+    # (Optional) IP Address and Gateway
+    # ipconfig0 = "ip=0.0.0.0/0,gw=0.0.0.0"
+    
+    # (Optional) Default User
+    # ciuser = "your-username"
+    
+    # (Optional) Add your SSH KEY
+    # sshkeys = <<EOF
+    # #YOUR-PUBLIC-SSH-KEY
+    # EO
 
 }
